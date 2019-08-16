@@ -79,7 +79,7 @@ onKey('4', hyper, () => {
 });
 
 onKey('w', hyper, () => {
-    launchApp('KeePassWC');
+    launchApp('KeePassXC');
 });
 
 onKey('a', hyper, () => {
