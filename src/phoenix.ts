@@ -82,9 +82,8 @@ onKey('w', hyper, () => {
     launchApp('KeePassXC');
 });
 
-onKey('a', hyper, () => {
-    // launchApp('IntelliJ IDEA Community');
-    launchApp('Dash');
+onKey('e', hyper, () => {
+    launchApp('Sublime Text');
 });
 
 onKey('s', hyper, () => {
