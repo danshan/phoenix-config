@@ -86,6 +86,14 @@ onKey('e', hyper, () => {
     launchApp('Sublime Text');
 });
 
+onKey('r', hyper, () => {
+    launchApp('Microsoft To-Do');
+});
+
+onKey('t', hyper, () => {
+    launchApp('Tweetbot');
+});
+
 onKey('s', hyper, () => {
     // launchApp('IntelliJ IDEA Community');
     launchApp('IntelliJ IDEA Ultimate');
@@ -119,9 +127,6 @@ onKey('b', hyper, () => {
     launchApp('BearyChat');
 });
 
-onKey('t', hyper, () => {
-    launchApp('Tweetbot');
-});
 
 /**
  * Screen configuration
