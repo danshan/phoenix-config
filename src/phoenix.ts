@@ -87,7 +87,7 @@ onKey('e', hyper, () => {
 });
 
 onKey('r', hyper, () => {
-    launchApp('Microsoft To-Do');
+    launchApp('Reminders');
 });
 
 onKey('t', hyper, () => {
@@ -96,7 +96,8 @@ onKey('t', hyper, () => {
 
 onKey('s', hyper, () => {
     // launchApp('IntelliJ IDEA Community');
-    launchApp('IntelliJ IDEA Ultimate');
+    // launchApp('IntelliJ IDEA Ultimate Release');
+    launchApp('IntelliJ IDEA Ultimate EAP');
 });
 
 onKey('d', hyper, () => {
@@ -108,7 +109,8 @@ onKey(',', hyper, () => {
 });
 
 onKey('.', hyper, () => {
-    launchApp('Microsoft Outlook');
+    // launchApp('Microsoft Outlook');
+    launchApp('Mail');
 });
 
 onKey('/', hyper, () => {
