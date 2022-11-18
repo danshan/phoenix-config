@@ -1,5 +1,9 @@
 Phoenix.notify("Phoenix config loading")
 
+require('.phoenix-config/app.js')
+require('.phoenix-config/frame.js')
+require('.phoenix-config/window.js')
+
 // Preferences
 Phoenix.set({
   daemon: false,
@@ -18,117 +22,16 @@ _.mixin({
 })
 
 // Globals
-const HIDDEN_DOCK_MARGIN = 3
-const INCREMENT = 0.05
 const MASH_APP = ["alt"]
 const MASH_RESIZE = ["alt", "shift"]
 const MASH_MOVE = ["alt", "ctrl"]
-
-// Relative Directions
-const LEFT = 'left'
-const RIGHT = 'right'
-const CENTRE = 'centre'
-
-// Cardinal Directions
-const NW = 'nw'
-const NE = 'ne'
-const SE = 'se'
-const SW = 'sw'
-
-// Frame
-const getResizeFrame = function(frame, ratio) {
-  return {
-      x: Math.round(frame.x + frame.width / 2 * (1 - ratio)),
-      y: Math.round(frame.y + frame.height / 2 * (1 - ratio)),
-      width: Math.round(frame.width * ratio),
-      height: Math.round(frame.height * ratio),
-  }
-}
-
-const getSmallerFrame = function(frame) {
-  return getResizeFrame(frame, 0.9)
-}
-
-const getLargerFrame = function(frame) {
-  return getResizeFrame(frame, 1.1)
-}
-
-// Window
-Window.getCurrentWindow = function() {
-  const windowOptional = Window.focused()
-  if (windowOptional !== undefined) {
-    return windowOptional
-  }
-  return App.focused().mainWindow()
-}
-
-Window.setWindowCentral = (window) => {
-  const screenSize = window.screen().flippedVisibleFrame()
-  window.setTopLeft({
-    x: (screenSize.width - window.size().width) / 2 + screenSize.x,
-    y: (screenSize.height - window.size().height) / 2 + screenSize.y,
-  })
-}
-
-Window.maximizeWindow = function(window) {
-  const screenSize = window.screen().flippedVisibleFrame()
-  log(window.size(), "window size")
-  log(window.topLeft(), "window position")
-  log(screenSize, "screen size")
-
-  window.setTopLeft({
-    x: screenSize.x,
-    y: screenSize.y,
-  })
-  window.setSize({
-    width: screenSize.width,
-    height: screenSize.height,
-  })
-}
-
-Window.smallerWindow = function(window) {
-  const originFrame = window.frame()
-  const frame = getSmallerFrame(window.frame())
-  window.setFrame(frame)
-  if (window.frame().width === originFrame.width || window.frame().height === originFrame.height) {
-    window.setFrame(originFrame)
-  }
-}
-
-Window.largerWindow = function(window) {
-  const frame = getLargerFrame(window.frame())
-  if (frame.width > window.screen().flippedVisibleFrame().width || frame.height > window.screen().flippedVisibleFrame().height) {
-    Window.maximizeWindow(window)
-  } else {
-    window.setFrame(frame)
-  }
-}
-
-// Applications
-App.focusOrStart = (name, orName) => {
-  _.each(App.all(), a => console.log("found app: " + a.name()))
-
-  const window = Window.getCurrentWindow()
-  let app = App.launch(name)
-  if (app === undefined && orName) {
-    app = App.launch(orName)
-  }
-  if (app == undefined) {
-    return
-  }
-
-  if (window !== undefined && app.mainWindow() != undefined && window.hash() === app.mainWindow().hash()) {
-    return 
-  }
-
-  app.focus()
-}
 
 // Bindings
 keys = []
 const bindKey = (key, description, modifiers, fn) => keys.push(Key.on(key, modifiers, fn))
 const bindApp = (key, description, appName, orAppName) => bindKey(key, description, MASH_APP, () => App.focusOrStart(appName, orAppName))
 const bindResize = (key, description, fn) => bindKey(key, description, MASH_RESIZE, fn)
+const bindMove = (key, description, fn) => bindKey(key, description, MASH_MOVE, fn)
 
 bindApp("`", "Launch iTerm", "iTerm")
 bindApp(",", "Launch Craft", "Craft")
@@ -156,3 +59,13 @@ bindApp("w", "Launch KeePassXC", "KeePassXC")
 bindResize("m", "Maximize current window", () => Window.maximizeWindow(Window.getCurrentWindow()))
 bindResize("-", "Set current window smaller", () => Window.smallerWindow(Window.getCurrentWindow()))
 bindResize("=", "Set current window bigger", () => Window.largerWindow(Window.getCurrentWindow()))
+bindResize("up", "Set current window helf up", () => Window.halfUpWindow(Window.getCurrentWindow()))
+bindResize("down", "Set current window helf down", () => Window.halfDownWindow(Window.getCurrentWindow()))
+bindResize("left", "Set current window helf left", () => Window.halfLeftWindow(Window.getCurrentWindow()))
+bindResize("right", "Set current window helf right", () => Window.halfRightWindow(Window.getCurrentWindow()))
+
+bindMove("k", "Move window up", () => Window.moveUp(Window.getCurrentWindow()))
+bindMove("j", "Move window down", () => Window.moveDown(Window.getCurrentWindow()))
+bindMove("h", "Move window left", () => Window.moveLeft(Window.getCurrentWindow()))
+bindMove("l", "Move window right", () => Window.moveRight(Window.getCurrentWindow()))
+bindMove("m", "Move window central", () => Window.moveCentral(Window.getCurrentWindow()))
