@@ -1,8 +1,9 @@
 Phoenix.notify("Phoenix config loading")
 
-require('.phoenix-config/app.js')
-require('.phoenix-config/frame.js')
-require('.phoenix-config/window.js')
+require('phoenix-config/app.js')
+require('phoenix-config/frame.js')
+require('phoenix-config/window.js')
+require('phoenix-config/space.js')
 
 // Preferences
 Phoenix.set({
@@ -55,7 +56,6 @@ bindApp("t", "Launch Tweetbot", "Tweetbot")
 bindApp("v", "Launch Visual Studio Code", "Visual Studio Code")
 bindApp("w", "Launch KeePassXC", "KeePassXC")
 
-
 bindResize("m", "Maximize current window", () => Window.maximizeWindow(Window.getCurrentWindow()))
 bindResize("-", "Set current window smaller", () => Window.smallerWindow(Window.getCurrentWindow()))
 bindResize("=", "Set current window bigger", () => Window.largerWindow(Window.getCurrentWindow()))
@@ -69,3 +69,7 @@ bindMove("j", "Move window down", () => Window.moveDown(Window.getCurrentWindow(
 bindMove("h", "Move window left", () => Window.moveLeft(Window.getCurrentWindow()))
 bindMove("l", "Move window right", () => Window.moveRight(Window.getCurrentWindow()))
 bindMove("m", "Move window central", () => Window.moveCentral(Window.getCurrentWindow()))
+bindMove("i", "Move window to next space", () => Window.moveToSpace(Window.getCurrentWindow(), (space) => space.next()))
+bindMove("o", "Move window to previous space", () => Window.moveToSpace(Window.getCurrentWindow(), (space) => space.previous()))
+bindMove("n", "Move window to next screen", () => Window.moveWindowToScreen(Window.getCurrentWindow(), (window) => window.screen().next()))
+bindMove("p", "Move window to previous screen", () => Window.moveWindowToScreen(Window.getCurrentWindow(), (window) => window.screen().previous()))

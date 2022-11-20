@@ -149,3 +149,81 @@ Window.moveCentral = function(window) {
     y: (frame.height - window.size().height) / 2 + frame.y,
   })
 }
+
+Window.moveToSpace = (window, targetSpaceFn) => {
+  if (window.isFullScreen() || window.isMinimized()) {
+    log("moveWindowToSpace windows is full screen")
+    return
+  }
+
+  const current = Space.active();
+  if (current === undefined) {
+    log("moveWindowToSpace no currentSpace")
+    return
+  }
+
+  const allSpaces = Space.all()
+  const target = targetSpaceFn(current)
+  if (target === undefined) {
+    log("moveWindowToSpace no targetSpaceOptinal")
+    return
+  }
+
+  if (target.isFullScreen()) {
+    log("moveWindowToSpace target is full screen")
+    return
+  }
+  if (target.screens().length === 0) {
+    log("moveWindowToSpace target screen length is 0")
+    return
+  }
+
+  if (target.screens()[0].hash() !== current.screens()[0].hash()) {
+      log("moveWindowToSpace, target equlas current");
+      return
+  }
+  target.moveWindows([window])
+  window.focus()
+}
+
+Window.moveWindowToScreen = (window, targetScreenFn) => {
+  const targetScreen = targetScreenFn(window);
+    if (window.screen().hash() === targetScreen.hash()) {
+        log("moveWindowToScreen, same screen");
+        return;
+    }
+
+    Window.moveToScreen(window, targetScreen)
+    window.focus()
+}
+
+Window.moveToScreen = (window, screen) => {
+  const app = window.app();
+  const currentSpaces = window.spaces();
+  const windowFrame = window.frame();
+  const currentScreenFrame = window.screen().flippedVisibleFrame();
+  const targetScreenFrame = screen.flippedVisibleFrame();
+
+  let widthRatio = targetScreenFrame.width / currentScreenFrame.width;
+  let heightRatio = targetScreenFrame.height / currentScreenFrame.height;
+
+  const x = (windowFrame.x - currentScreenFrame.x) * widthRatio + targetScreenFrame.x;
+  const y = (windowFrame.y - currentScreenFrame.y) * heightRatio + targetScreenFrame.y;
+  const width = windowFrame.width * widthRatio;
+  const height = windowFrame.height * heightRatio;
+
+  window.setFrame({
+      x,
+      y,
+      width,
+      height,
+  });
+  const targetSpace = screen.currentSpace();
+  if (targetSpace === undefined) {
+      log('moveToScreen, no screen.currentSpace()');
+      return;
+  }
+
+  app.hide();
+  app.show();
+}
